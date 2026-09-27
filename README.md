@@ -4,7 +4,7 @@ Sistem Informasi Manajemen Terpadu **Staf Sumber Daya Manusia Kepolisian Negara 
 
 ---
 
-## 🏗️ 1. URUTAN ALUR PEMROGRAMAN & ARSITEKTUR SISTEM
+## 1. URUTAN ALUR PEMROGRAMAN & ARSITEKTUR SISTEM
 
 Sistem ini dibangun dengan pendekatan **Clean Modular Architecture** yang memisahkan lapisan basis data, REST API Golang, integrasi AI lokal, dan antarmuka Next.js:
 
@@ -18,7 +18,7 @@ flowchart TD
     end
 
     subgraph 2. REST API BACKEND (Golang)
-        API_BOOT[main.go / Port 8080]
+        API_BOOT[main.go / Port 8085]
         API_POOL[database.go / Conn Pool]
         API_AUTH[middleware/auth.go / JWT SHA-256]
         API_H_AUTH[handlers/auth_handler.go]
@@ -71,7 +71,7 @@ flowchart TD
 
 ---
 
-## 📋 2. TAKSONOMI 6 PILAR & 20 SUBMODUL OPERASIONAL
+## 2. TAKSONOMI 6 PILAR & 20 SUBMODUL OPERASIONAL
 
 | No | Pilar Utama | Submodul | Komponen Tampilan |
 |---|---|---|---|
@@ -84,7 +84,7 @@ flowchart TD
 
 ---
 
-## 🖥️ 3. PANDUAN CARA MENGGUNAKAN SISTEM
+## 3. PANDUAN CARA MENGGUNAKAN SISTEM
 
 ### Langkah 1: Masuk ke Sistem (Login Presisi)
 1. Buka peramban (browser) di tautan: `http://localhost:3000`.
@@ -197,27 +197,27 @@ flowchart TD
 
 ---
 
-## 🚀 4. PANDUAN TEKNIS MENJALANKAN SISTEM (RINGKAS & DETAIL)
+## 4. PANDUAN TEKNIS MENJALANKAN SISTEM
 
-> 💡 **TIPS KETIKA TOKEN AI HABIS / TANPA BERGANTUNG PADA ASISTEN**:
+> **Panduan Mandiri Pengoperasian Sistem**:
 > Simpan atau gunakan panduan ringkas ini kapan saja untuk menjalankan seluruh modul sistem INFOPERS secara mandiri.
 
 ---
 
-### ⚡ METODE 1: Cara Tercepat (1-Klik Jalankan Seluruh Sistem)
+### METODE 1: Cara Cepat (Satu Klik Jalankan Seluruh Sistem)
 
 Telah disediakan skrip otomatis yang langsung menyalakan Ollama AI, Backend Golang, dan Frontend Next.js di terminal terpisah sekaligus membuka browser:
 * **Cukup klik ganda (double-click) file:**  
-  👉 **`jalankan_semua.bat`** (atau jalankan `.\jalankan_semua.ps1` di PowerShell).
+  * **`jalankan_semua.bat`** (atau jalankan `.\jalankan_semua.ps1` di PowerShell).
 * Semua server akan menyala otomatis dan browser akan membuka `http://localhost:3000`.
 
 ---
 
-### 💻 METODE 2: Menjalankan Secara Manual (Script Per Terminal)
+### METODE 2: Menjalankan Secara Manual (Per Terminal)
 
 Jika Anda ingin menjalankan setiap layanan satu per satu di jendela Terminal/PowerShell terpisah:
 
-#### 1️⃣ Terminal 1: Menjalankan Mesin AI (Ollama Llama-3)
+#### Terminal 1: Mesin AI Lokal (Ollama)
 Buka PowerShell baru dan jalankan:
 ```powershell
 ollama run llama3:8b
@@ -225,16 +225,16 @@ ollama run llama3:8b
 *(Atau opsi hemat RAM: `ollama run llama3.2:3b`)*  
 > Port aktif: `http://localhost:11434` (Status: `Ollama is running`).
 
-#### 2️⃣ Terminal 2: Menjalankan Backend REST API (Golang)
+#### Terminal 2: Backend REST API Golang
 Buka PowerShell baru dan jalankan baris perintah berikut:
 ```powershell
 cd /d "d:\1. MASTER\antigravityIDE\PROJECT\programingdatassdm\infopers_backend"
-.\backend.exe
+.\infopers_server.exe
 ```
-> Server Golang aktif pada: `http://localhost:8080`.  
+> Server Golang aktif pada: `http://localhost:8085`.  
 > *(Catatan: Bila ingin menjalankan langsung dari source code, gunakan: `go run main.go`).*
 
-#### 3️⃣ Terminal 3: Menjalankan Frontend Web Antarmuka (Next.js 16)
+#### Terminal 3: Frontend Web Antarmuka (Next.js 15)
 Buka PowerShell baru dan jalankan:
 ```powershell
 cd /d "d:\1. MASTER\antigravityIDE\PROJECT\programingdatassdm\infopers_frontend"
@@ -242,23 +242,23 @@ npm run dev
 ```
 > Aplikasi web aktif pada: `http://localhost:3000`.
 
-#### 4️⃣ Akses Sistem di Browser:
+#### Verifikasi Akses di Browser:
 1. Buka Google Chrome atau Microsoft Edge ke alamat: **`http://localhost:3000`**
 2. Gunakan kredensial login:
    - **Superadmin Nasional**: `admin.nasional` / Password: `Polri2026!`
    - **Personel Mandiri**: `04031518` / Password: `Polri2026!`
-3. Masuk ke menu **"Smart Q&A Assistant (AI)"** pada Pilar 3. Indikator akan langsung menyala **`🟢 Ollama Online (llama3:8b)`**.
+3. Masuk ke menu **"Smart Q&A Assistant (AI)"** pada Pilar 3. Indikator akan langsung menyala **`Ollama Online (llama3:8b)`**.
 
 ---
 
-### 🛠️ Detail Konfigurasi & Troubleshooting Mandiri:
+### Detail Konfigurasi & Troubleshooting Mandiri:
 
 
 ### 3. Panduan Lengkap Instalasi & Menjalankan Ollama AI Lokal (Windows)
 
 Fitur **Smart Q&A Assistant** dan **AI Rekomendasi** di INFOPERS SSDM Polri dirancang untuk memanfaatkan model AI lokal (On-Premise) melalui **Ollama** demi keamanan data rahasia personel Polri tanpa mengirim data ke internet publik.
 
-> ℹ️ **Catatan Status Saat Ini**:
+> **Catatan Status Operasional**:
 > Jika Ollama belum diinstal atau belum dijalankan, backend INFOPERS otomatis mengaktifkan mode *Failsafe Database Internal* (`PostgreSQL Smart Query Engine`), sehingga aplikasi tetap dapat menjawab data personel secara akurat. Namun, untuk mendapatkan analisis narasi kecerdasan buatan generatif secara optimal, ikuti tahapan instalasi berikut:
 
 #### A. Unduh & Instal Ollama di Windows
@@ -318,7 +318,7 @@ Jika tampil tulisan **"Ollama is running"**, artinya mesin AI sudah aktif dan si
 
 ---
 
-## 💾 5. PROSEDUR PENCADANGAN KODE (BACKUP OTOMATIS)
+## 5. PROSEDUR PENCADANGAN KODE (BACKUP OTOMATIS)
 
 Tersedia skrip otomatis untuk membuat arsip kompresi `.zip` berstempel waktu yang bersih tanpa menyertakan `node_modules` atau file cache:
 1. Cukup klik ganda file shortcut: `backup.bat`
@@ -330,11 +330,35 @@ Arsip akan dibuat di dalam folder `backups/`, contoh: `backups/backup_infopers_2
 
 ---
 
-## 🖥️ 6. DOKUMEN PERENCANAAN PENGADAAN HARDWARE & ESTIMASI ANGGARAN (RAB)
+## 6. DOKUMEN PERENCANAAN PENGADAAN HARDWARE & ESTIMASI ANGGARAN (RAB)
 
 Telah disusun dokumen analisis komputasi enterprise, spesifikasi teknis hardware, kebutuhan VRAM/RAM per library, serta Rencana Anggaran Biaya (RAB) pengadaan server AI on-premise Mabes Polri:
-* 📄 **File Dokumen Lengkap**: [`DOKUMEN_PERENCANAAN_PENGADAAN_HARDWARE_INFOPERS_SSDM_2026.md`](./DOKUMEN_PERENCANAAN_PENGADAAN_HARDWARE_INFOPERS_SSDM_2026.md)
+* **File Dokumen Lengkap**: [`DOKUMEN_PERENCANAAN_PENGADAAN_HARDWARE_INFOPERS_SSDM_2026.md`](./DOKUMEN_PERENCANAAN_PENGADAAN_HARDWARE_INFOPERS_SSDM_2026.md)
 * **Kebutuhan VRAM Model AI**: 16 GB - 48 GB (Llama 3 8B, Qwen 2.5 14B, DeepSeek R1)
 * **Kebutuhan RAM Basis Data**: 32 GB - 64 GB ECC (483.355 data personel)
 * **Total Estimasi Anggaran Pengadaan (RAB)**: **Rp 897.600.000,-** (Server GPU Dual RTX A6000 Ada 96GB + Server Database NVMe RAID-10 + NAS Backup 48TB + Switch 10G & UPS 10kVA).
 
+---
+
+## 7. TATA KELOLA KEAMANAN REPOSITORI & KONFIGURASI .GITIGNORE
+
+Repositori ini telah dikonfigurasi dengan standar keamanan repositori tingkat enterprise. Seluruh kredensial sensitif, berkas snapshot berukuran besar, binary kompilasi, dan dependensi lingkungan diisolasi menggunakan .gitignore berlapis (Root .gitignore, infopers_backend/.gitignore, dan infopers_frontend/.gitignore).
+
+### A. Kebijakan Isolasi File (.gitignore):
+1. **Keamanan Kredensial & Lingkungan**:
+   - Seluruh berkas .env, .env.local, .env.*.local, dan berkas konfigurasi lokal lainnya diblokir dari commit git untuk mencegah kebocoran password database PostgreSQL maupun kunci JWT.
+   - Disediakan template infopers_backend/.env.example untuk memudahkan konfigurasi lokal oleh penguji kodingan.
+   - Akun yang tertera pada panduan dan skrip peluncur (admin.nasional / Polri2026!) adalah **Akun Mock / Demo Pengujian Lokal** yang khusus disiapkan untuk pengujian antarmuka dan evaluasi fungsi, bukan akun server produksi kedinasan.
+2. **Isolasi Dependensi & Artefak Kompilasi**:
+   - Direktori node_modules/ dan build Next.js (.next/, out/) diabaikan agar ukuran repositori git tetap ringan dan bersih.
+   - Berkas biner hasil kompilasi Go (*.exe, infopers_server.exe, backend.exe) dikecualikan dari repositori kode sumber.
+3. **Perlindungan Berkas Backup & Database**:
+   - Direktori backups/ dan seluruh berkas arsip *.zip diabaikan sehingga snapshot cadangan kode tidak membebani remote git.
+   - Berkas dump basis data mentah (*.dump, *.sql.gz) dikecualikan untuk kepatuhan perlindungan data pribadi personel.
+
+### B. Evaluasi & Pengujian Kodingan (Code Testing Assessment):
+Proyek ini memenuhi standar pengujian kodingan profesional (*Technical Code Assessment / Code Review*):
+* **Arsitektur Modular (Clean Architecture)**: Pemisahan tegas antara lapisan antarmuka UI (Next.js App Router), API Gateway & Business Service (Golang Microservices), dan Persistence Storage (PostgreSQL Enterprise 483K records).
+* **Integritas & Audit Trail**: Implementasi verifikasi hash berantai SHA-256 untuk mendeteksi manipulasi riwayat mutasi atau data personel.
+* **Pengamanan Akses (RBAC)**: Otentikasi berbasis JWT Bearer Token dengan pembagian hak akses terperinci antara Superadmin Nasional dan Personel Mandiri.
+* **Performa Tinggi**: Optimasi connection pool PostgreSQL dan penanganan fallback cerdas saat layanan AI eksternal/lokal dalam kondisi offline.

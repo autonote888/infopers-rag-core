@@ -10,7 +10,7 @@
 Dokumen lampiran teknis ini memuat pemodelan arsitektur sistem berbasis **Unified Modeling Language (UML)** untuk **Sistem Informasi Personel (INFOPERS) & Asisten Tribrata (SSDM Artificial Intelligence)**. Pemodelan ini dirancang sesuai standar rekayasa perangkat lunak enterprise dan tata kelola TI Polri Presisi, mencakup integrasi penuh antara:
 1. **Frontend Layer:** Next.js 15 (React 19, TypeScript, TailwindCSS, Lucide Icons)
 2. **Backend Microservice Layer:** Golang Microservice (Gorilla Mux, JWT Bearer Token, Smart NLP Parser, Connection Pool)
-3. **Database Enterprise Layer:** PostgreSQL 15+ (483.355 Records: 465.972 Polri, 15.718 ASN/PNS, 1.666 PPPK)
+3. **Database Enterprise Layer:** PostgreSQL 15+ (483.355 Records: 465.971 Polri, 15.718 ASN/PNS, 1.666 PPPK)
 4. **AI Inference Runtime Layer:** Ollama Local LLM Runtime (Dual NVIDIA RTX A6000 Ada 96GB VRAM, Llama-3-8B, Qwen-2.5-14B)
 5. **Infrastruktur Datacenter On-Premises:** 3-Tier Enterprise Server (Server AI, Server Backend & Database, NAS Storage Vault WORM 48TB)
 
@@ -24,49 +24,49 @@ Diagram berikut memodelkan penempatan fisik setiap modul perangkat lunak pada no
 flowchart TD
     %% Node Klien
     subgraph NODE_CLIENT["Simpul Klien: Workstation Mabes & 34 Polda"]
-        CLIENT_BROWSER["🖥️ Web Browser Klien\n(Chrome / Edge / Firefox)\nMode: Website & Asisten AI"]
+        CLIENT_BROWSER["Web Browser Klien\n(Chrome / Edge / Firefox)\nMode: Website & Asisten AI"]
     end
 
     %% Node Perimeter Keamanan
     subgraph NODE_PERIMETER["Perimeter Keamanan Jaringan Datacenter Mabes Polri"]
-        FW["🛡️ NextGen Hardware Firewall Appliance\nStateful Inspection & IPS/IDS Anti-DDoS"]
-        SW_CORE["🔀 Switch Core 24-Port 10G SFP+ Managed L3\nVLAN 10 (Web) | VLAN 20 (DB) | VLAN 30 (AI)"]
+        FW["NextGen Hardware Firewall Appliance\nStateful Inspection & IPS/IDS Anti-DDoS"]
+        SW_CORE["Switch Core 24-Port 10G SFP+ Managed L3\nVLAN 10 (Web) | VLAN 20 (DB) | VLAN 30 (AI)"]
     end
 
     %% Tier 1: Frontend Server
     subgraph TIER_FE["Simpul 1: Server Frontend Web (Node.js Host)"]
-        APP_NEXTJS["🌐 Next.js 15 Web Application\nReact 19 Server Components\n[Port: 3000 | HTTPS]"]
+        APP_NEXTJS["Next.js 15 Web Application\nReact 19 Server Components\n[Port: 3000 | HTTPS]"]
     end
 
     %% Tier 2: Backend Application Server
     subgraph TIER_BE["Simpul 2: Server Backend Microservice (AMD EPYC 9254 / 128GB ECC)"]
-        APP_GOLANG["⚡ Golang Microservice Binary (backend.exe)\nGorilla Mux | JWT Middleware | Smart NLP\n[Port: 8080 | HTTP REST]"]
-        APP_MONITOR["📊 System Resource Monitor\nWMI / CIM / Process Metrics Collector"]
+        APP_GOLANG["Golang Microservice Binary (infopers_server.exe)\nGorilla Mux | JWT Middleware | Smart NLP\n[Port: 8085 / 8080 | HTTP REST]"]
+        APP_MONITOR["System Resource Monitor\nWMI / CIM / Process Metrics Collector"]
     end
 
     %% Tier 3: Database Server Enterprise
     subgraph TIER_DB["Simpul 3: Server Database PostgreSQL (RAID-10 NVMe)"]
-        DB_POSTGRES[("🐘 PostgreSQL Enterprise 15+\n[Port: 5432 | TCP pgx Pool]\n• public.data_polri_september_2026 (483.355 data)\n  - Polri: 465.972 (96,40%)\n  - ASN: 15.718 (3,25%)\n  - PPPK: 1.666 (0,35%)\n• dummy_user_access & Audit Trail Log")]
+        DB_POSTGRES[("PostgreSQL Enterprise 15+\n[Port: 5432 | TCP pgx Pool]\n• public.data_polri_september_2026 (483.355 data)\n  - Polri: 465.971 (96,40%)\n  - ASN: 15.718 (3,25%)\n  - PPPK: 1.666 (0,35%)\n• dummy_user_access & Audit Trail Log")]
     end
 
     %% Tier 4: Server AI Inference
     subgraph TIER_AI["Simpul 4: Server Akselerator AI (Dual AMD EPYC 9354 / 256GB ECC)"]
         subgraph GPU_ACCEL["Dual GPU NVIDIA RTX A6000 Ada (Total 96 GB GDDR6 ECC VRAM)"]
-            AI_OLLAMA["🧠 Ollama LLM Inference Engine\nC++ / GGML Tensor Cores\n[Port: 11434]"]
-            AI_MODELS["📦 Model Weights VRAM:\n• Llama-3-8B-Instruct (6.5 GB)\n• Qwen-2.5-14B (13.0 GB)\n• BGE-M3 Embeddings (2.5 GB)"]
+            AI_OLLAMA["Ollama LLM Inference Engine\nC++ / GGML Tensor Cores\n[Port: 11434]"]
+            AI_MODELS["Model Weights VRAM:\n• Llama-3-8B-Instruct (6.5 GB)\n• Qwen-2.5-14B (13.0 GB)\n• BGE-M3 Embeddings (2.5 GB)"]
         end
     end
 
     %% Tier 5: Backup & Storage Vault
     subgraph TIER_NAS["Simpul 5: Storage & Vault Backup (NAS 12-Bay Hot-Swap)"]
-        NAS_VAULT["💾 Synology Enterprise NAS (48TB RAID-6)\nWORM (Write Once Read Many) Immutable Storage\n[Port: 2049 NFS / 445 SMB]"]
+        NAS_VAULT["Synology Enterprise NAS (48TB RAID-6)\nWORM (Write Once Read Many) Immutable Storage\n[Port: 2049 NFS / 445 SMB]"]
     end
 
     %% Relasi Komunikasi Antar Node
     CLIENT_BROWSER -->|"HTTPS / WSS (Port 443 -> 3000)"| FW
     FW -->|"10GbE Fiber Backbone"| SW_CORE
     SW_CORE -->|"Internal VLAN 10 (Port 3000)"| APP_NEXTJS
-    APP_NEXTJS -->|"Internal API REST (Port 8080)"| APP_GOLANG
+    APP_NEXTJS -->|"Internal API REST (Port 8085)"| APP_GOLANG
     APP_GOLANG -->|"TCP pgx Pool (Port 5432)"| DB_POSTGRES
     APP_GOLANG -->|"Internal HTTP JSON (Port 11434)"| AI_OLLAMA
     APP_GOLANG -.->|"Direct Kernel CIM Query"| APP_MONITOR
@@ -214,9 +214,9 @@ sequenceDiagram
     Note over DB: Eksekusi Engine PostgreSQL 15<br/>Pindai 483.355 Records Terindeks<br/>Durasi: < 120 ms
     DB-->>DashH: Return Total: 483.355 | ASN: 15.718 | PPPK: 1.666
     
-    DashH->>DashH: Kalkulasi Kuantitatif:<br/>• Total Polri = 483.355 - 15.718 - 1.666 = 465.972<br/>• Persentase: Polri 96,40% | PNS 3,25% | PPPK 0,35%<br/>• Hitung query_time_ms
+    DashH->>DashH: Kalkulasi Kuantitatif:<br/>• Total Polri = 483.355 - 15.718 - 1.666 = 465.971<br/>• Persentase: Polri 96,40% | PNS 3,25% | PPPK 0,35%<br/>• Hitung query_time_ms
     
-    DashH-->>UI: Return JSON { total_personel: 483355, total_polri: 465972, total_pns: 15718, total_pppk: 1666, query_time_ms: 118 }
+    DashH-->>UI: Return JSON { total_personel: 483355, total_polri: 465971, total_pns: 15718, total_pppk: 1666, query_time_ms: 118 }
     UI-->>Pimpinan: Tampilkan 4 Kartu KPI Mewah + Bilah Proporsi Multi-Segmen
 ```
 
@@ -333,7 +333,7 @@ Tabel berikut menjadi acuan kebenaran data (*single source of truth*) yang diint
 
 | Kategori Kepegawaian | Jumlah Riil (Data Terpusat) | Persentase Rasio | Kualifikasi & Jenjang Resmi |
 | :--- | :---: | :---: | :--- |
-| **Anggota POLRI** | **465.972** | **96,40%** | Perwira Tinggi (Pati), Pamen, Pama, Bintara, Tamtama |
+| **Anggota POLRI** | **465.971** | **96,40%** | Perwira Tinggi (Pati), Pamen, Pama, Bintara, Tamtama |
 | **PNS / ASN POLRI** | **15.718** | **3,25%** | PNS Golongan I s/d IV & Jabatan Fungsional Keahlian |
 | **PPPK POLRI** | **1.666** | **0,35%** | Pegawai Perjanjian Kerja (Tenaga Kesehatan & Teknis) |
 | **TOTAL PERSONEL** | **483.355** | **100,00%** | **Seluruh Personel Aktif Terdata di Basis Data Terpusat** |

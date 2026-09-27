@@ -11,11 +11,11 @@ Berdasarkan pembacaan langsung dari kernel Windows dan controller hardware (*WMI
 
 | Komponen Hardware / Resource | Kapasitas Terpasang | Kapasitas Terpakai Saat Ini | Kapasitas Bebas (Available) | Persentase Utilisasi | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **RAM Fisik Sistem (System RAM)** | **15.71 GB** (~16 GB) | **12.09 GB** | **3.62 GB** | **77.0%** | ⚠️ **Waspada (Tinggi)** |
-| **GPU / Video Controller** | **Intel(R) UHD Graphics** | Integrated (Shared) | Dynamic allocation | - | ℹ️ Integrated GPU |
-| **VRAM / Dedicated NVRAM GPU** | **1.024 MB (1.0 GB)** | ~512 MB - 1024 MB | 0 MB Dedicated | 100% Shared | ❌ **Tidak Cukup untuk LLM** |
-| **NVIDIA Dedicated GPU (NVRAM)** | **Tidak Terdeteksi** | 0 GB NVRAM | 0 GB | - | ❌ Butuh Dedicated GPU |
-| **Core CPU & Threads** | **16 Logical Processors** | Multi-threaded | - | Idle / Responsif | ✅ Memadai untuk Web/DB |
+| **RAM Fisik Sistem (System RAM)** | **15.71 GB** (~16 GB) | **12.09 GB** | **3.62 GB** | **77.0%** | **Waspada (Tinggi)** |
+| **GPU / Video Controller** | **Intel(R) UHD Graphics** | Integrated (Shared) | Dynamic allocation | - | Integrated GPU |
+| **VRAM / Dedicated NVRAM GPU** | **1.024 MB (1.0 GB)** | ~512 MB - 1024 MB | 0 MB Dedicated | 100% Shared | **Tidak Memenuhi Syarat Minimal LLM** |
+| **NVIDIA Dedicated GPU (NVRAM)** | **Tidak Terdeteksi** | 0 GB NVRAM | 0 GB | - | Diperlukan Dedicated GPU |
+| **Core CPU & Threads** | **16 Logical Processors** | Multi-threaded | - | Idle / Responsif | Memadai untuk Web dan Database |
 
 ---
 
@@ -53,13 +53,13 @@ Model LLM (Large Language Model) seperti Llama-3, Qwen-2.5, dan DeepSeek memerlu
 
 | Model / Library AI | Format Kuantisasi | Kebutuhan Minimum GPU VRAM | Kebutuhan Jika Dipaksa di CPU RAM | Status di Device Saat Ini (VRAM 1 GB / Sisa RAM 3.6 GB) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Llama-3-8B-Instruct** | Q4_K_M (4-bit) | **6.5 GB VRAM** | **8.5 GB RAM Bebas** | ❌ **Out of Memory (OOM) / Throttling** |
-| **Qwen-2.5-7B** | Q4_K_M (4-bit) | **5.8 GB VRAM** | **7.8 GB RAM Bebas** | ❌ **Out of Memory (OOM)** |
-| **DeepSeek-R1-Distill-8B** | Q4_K_M (4-bit) | **6.5 GB VRAM** | **8.5 GB RAM Bebas** | ❌ **Out of Memory (OOM)** |
-| **Embedding BGE-M3 (RAG)** | FP16 | **2.5 GB VRAM** | **4.0 GB RAM Bebas** | ⚠️ Sangat Pas-pasan / Lemot |
-| **Llama-3.2-1B / 3B** | Q4_K_M (Ringan) | **2.0 GB - 3.2 GB VRAM** | **3.5 GB RAM Bebas** | 🟡 **Bisa Jalan Lambat (Offloading CPU)** |
+| **Llama-3-8B-Instruct** | Q4_K_M (4-bit) | **6.5 GB VRAM** | **8.5 GB RAM Bebas** | **Keterbatasan Memori (OOM / Throttling)** |
+| **Qwen-2.5-7B** | Q4_K_M (4-bit) | **5.8 GB VRAM** | **7.8 GB RAM Bebas** | **Keterbatasan Memori (OOM)** |
+| **DeepSeek-R1-Distill-8B** | Q4_K_M (4-bit) | **6.5 GB VRAM** | **8.5 GB RAM Bebas** | **Keterbatasan Memori (OOM)** |
+| **Embedding BGE-M3 (RAG)** | FP16 | **2.5 GB VRAM** | **4.0 GB RAM Bebas** | Kapasitas Terbatas |
+| **Llama-3.2-1B / 3B** | Q4_K_M (Ringan) | **2.0 GB - 3.2 GB VRAM** | **3.5 GB RAM Bebas** | **Dapat Dijalankan (CPU Offload)** |
 
-### ⚠️ Mengapa Device Saat Ini Mengalami Kendala untuk LLM 8B Lokal?
+### Mengapa Perangkat Saat Ini Mengalami Kendala untuk LLM 8B Lokal?
 1. **Tidak Ada Dedicated GPU (NVRAM):** GPU saat ini adalah *Intel(R) UHD Graphics* dengan VRAM virtual 1.0 GB yang meminjam RAM sistem.
 2. **Kapasitas Bebas Hanya 3.62 GB:** Ketika Ollama mencoba memuat model Llama-3-8B (yang membutuhkan 6.5 GB), Windows akan kekurangan memori fisik dan terpaksa melakukan **Paging/Swapping ke Harddisk/SSD**. Akibatnya inferensi menjadi sangat lambat (kurang dari 1 token per detik) atau proses crash (*Killed / Out of Memory*).
 

@@ -3,7 +3,7 @@
 
 ---
 
-### 📋 LEMBAR INFORMASI DOKUMEN
+### LEMBAR INFORMASI DOKUMEN
 * **Nama Sistem** : Sistem Informasi Manajemen Terpadu Personel & AI RAG (INFOPERS SSDM POLRI)
 * **Kapasitas Basis Data** : 483.355 Data Induk Personel Polri Aktif (Mabes Polri & 34 Polda Jajaran)
 * **Arsitektur Sistem** : Clean Architecture (Golang REST API + PostgreSQL 16 + Next.js 16 + Ollama AI Engine + Audit Trail SHA-256)
@@ -12,7 +12,7 @@
 
 ---
 
-## 📑 DAFTAR ISI
+## DAFTAR ISI
 1. [Ringkasan Eksekutif & Tujuan Pengadaan](#1-ringkasan-eksekutif--tujuan-pengadaan)
 2. [Matriks Kebutuhan Komputasi Setiap Library & Komponen Sistem](#2-matriks-kebutuhan-komputasi-setiap-library--komponen-sistem)
 3. [Analisis Kebutuhan Memori GPU (VRAM) untuk Model AI Ollama](#3-analisis-kebutuhan-memori-gpu-vram-untuk-model-ai-ollama)
@@ -213,7 +213,7 @@ flowchart LR
 
 ---
 
-### 💰 REKAPITULASI TOTAL ESTIMASI ANGGARAN (RAB)
+### REKAPITULASI TOTAL ESTIMASI ANGGARAN (RAB)
 
 | No | Kategori Alokasi Anggaran | Jumlah Biaya (IDR) | Persentase |
 |:---:|---|---:|:---:|

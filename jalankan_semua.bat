@@ -12,8 +12,8 @@ start "INFOPERS - Ollama AI Daemon" cmd /k "title Ollama AI && echo Menjalankan 
 
 timeout /t 3 /nobreak >nul
 
-echo [2/3] Menjalankan Server Backend (Golang :8080)...
-start "INFOPERS - Backend REST API" cmd /k "title Backend Golang && cd /d "d:\1. MASTER\antigravityIDE\PROJECT\programingdatassdm\infopers_backend" && .\backend.exe"
+echo [2/3] Menjalankan Server Backend (Golang :8085)...
+start "INFOPERS - Backend REST API" cmd /k "title Backend Golang && cd /d "d:\1. MASTER\antigravityIDE\PROJECT\programingdatassdm\infopers_backend" && .\infopers_server.exe"
 
 timeout /t 2 /nobreak >nul
 
@@ -27,9 +27,10 @@ echo ======================================================================
 echo SEMUA LAYANAN SEDANG BERJALAN!
 echo Membuka antarmuka di browser: http://localhost:3000
 echo.
-echo Akun Demo:
-echo - Superadmin: admin.nasional / Polri2026!
-echo - Mandiri   : 04031518       / Polri2026!
+echo Akun Demo Pengujian Lokal (Mock Testing Credentials):
+echo - Superadmin : admin.nasional / Polri2026!
+echo - Mandiri    : 04031518       / Polri2026!
 echo ======================================================================
 start http://localhost:3000
 pause
+
