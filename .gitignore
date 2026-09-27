@@ -1,0 +1,105 @@
+# ==============================================================================
+# .gitignore - Sistem Informasi Personel SSDM POLRI (Presisi)
+# Direktori Root Proyek
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. ARSIP BACKUP LOKAL (Ukuran Sangat Besar)
+# Alasan: File zip hasil backup.ps1 berukuran ~7MB per arsip. Jika diunggah,
+# ukuran repo Git akan membengkak ratusan MB dan terkena limit push GitHub.
+# ------------------------------------------------------------------------------
+/backups/
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ------------------------------------------------------------------------------
+# 2. HASIL KOMPILASI BINER BACKEND GO (Executables)
+# Alasan: File executable biner (.exe) platform-specific (Windows) dan dapat
+# dikompilasi ulang kapan saja via 'go build'. Menyimpan biner di repo Git
+# adalah bad practice dan rawan dianggap malware oleh security scanner.
+# ------------------------------------------------------------------------------
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/infopers_backend/infopers_server.exe
+/infopers_backend/*.exe
+
+# ------------------------------------------------------------------------------
+# 3. DEPENDENSI NODE.JS / NPM (Ratusan Megabyte)
+# Alasan: Berisi puluhan ribu file library yang dapat dipasang otomatis lewat
+# perintah 'npm install' berdasarkan package.json & package-lock.json.
+# ------------------------------------------------------------------------------
+node_modules/
+/infopers_frontend/node_modules/
+.pnp
+.pnp.js
+
+# ------------------------------------------------------------------------------
+# 4. HASIL BUILD & CACHE NEXT.JS (Turbopack Artifacts)
+# Alasan: Berkas cache kompilasi otomatis dari 'npm run build' / 'npm run dev'.
+# Selalu di-generate ulang secara lokal dan tidak boleh disimpan di Git.
+# ------------------------------------------------------------------------------
+.next/
+/infopers_frontend/.next/
+out/
+/infopers_frontend/out/
+build/
+/infopers_frontend/build/
+dist/
+
+# ------------------------------------------------------------------------------
+# 5. KREDENSIAL, KUNCI RAHASIA & ENVIRONMENT VARIABLES (Keamanan Siber)
+# Alasan: Mencegah kebocoran password database PostgreSQL, JWT Secret Key,
+# API token, dan konfigurasi server ke repositori publik/privat GitHub.
+# ------------------------------------------------------------------------------
+.env
+.env*.local
+*.env
+*.pem
+*.key
+*.cert
+
+# ------------------------------------------------------------------------------
+# 6. FILE LOG, TEST & RUNTIME TEMPORARY
+# Alasan: File log berubah setiap detik saat aplikasi dijalankan dan mengotori
+# riwayat commit git (git history noise).
+# ------------------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tmp
+*.temp
+
+# ------------------------------------------------------------------------------
+# 7. BACKUP & DUMP BASIS DATA DENGAN DATA PERSONEL RIIL
+# Alasan: Menjaga kerahasiaan data kepolisian (UU Perlindungan Data Pribadi / PDP).
+# Data mentah 483.355 personel tidak boleh bocor ke publik.
+# ------------------------------------------------------------------------------
+*.sql.gz
+*.dump
+*.backup
+
+# ------------------------------------------------------------------------------
+# 8. SISTEM OPERASI & KONFIGURASI IDE/EDITOR LOKAL
+# Alasan: File konfigurasi personal editor (VSCode, JetBrains) dan file sampah
+# bawaan sistem operasi (Windows / macOS) yang tidak relevan dengan source code.
+# ------------------------------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini

@@ -1,0 +1,20 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+infopers_server.exe
+
+# Test binary, output of 'go test -c'
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Environment variables & secrets
+.env
+*.env
+
+# Logs
+*.log
