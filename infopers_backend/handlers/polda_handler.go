@@ -48,7 +48,7 @@ func (h *PoldaHandler) GetPoldaSummary(w http.ResponseWriter, r *http.Request) {
 			COUNT(*) FILTER (WHERE jenis_personel = 'ASN' OR jenis_personel = 'PNS') AS pns,
 			COUNT(*) FILTER (WHERE jenis_personel = 'PPPK') AS pppk
 		FROM public.data_polri_september_2026
-		WHERE nama_polda IS NOT NULL AND nama_polda != ''
+		WHERE nama_polda IS NOT NULL AND nama_polda != '' AND nama_polda != 'MABES POLRI'
 		GROUP BY polda
 		ORDER BY polda ASC;
 	`

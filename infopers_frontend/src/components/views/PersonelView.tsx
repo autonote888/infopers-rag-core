@@ -10,10 +10,16 @@ import {
   Eye,
   X,
   FileCheck,
+  Sparkles,
 } from "lucide-react";
 import { fetchWithAuth } from "@/lib/api";
 
-export default function PersonelView({ initialTab = "daftar" }: { initialTab?: "daftar" | "cetak_rh" | "validasi_ocr" }) {
+interface PersonelViewProps {
+  initialTab?: "daftar" | "cetak_rh" | "validasi_ocr";
+  onAskAi?: (query: string) => void;
+}
+
+export default function PersonelView({ initialTab = "daftar", onAskAi }: PersonelViewProps) {
   const [activeTab, setActiveTab] = useState<"daftar" | "cetak_rh" | "validasi_ocr">(initialTab);
   const [personelList, setPersonelList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -141,12 +147,24 @@ export default function PersonelView({ initialTab = "daftar" }: { initialTab?: "
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-300 dark:border-[#27272a] bg-white dark:bg-[#121214] text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-slate-800 dark:focus:border-white"
               />
             </div>
-            <button
-              onClick={() => fetchPersonel(search)}
-              className="px-4 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black font-semibold text-xs shadow-2xs hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
-            >
-              Cari Data
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => fetchPersonel(search)}
+                className="px-4 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black font-semibold text-xs shadow-2xs hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors cursor-pointer"
+              >
+                Cari Data
+              </button>
+              {onAskAi && (
+                <button
+                  onClick={() => onAskAi(search || "Tampilkan ringkasan data personel")}
+                  className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                  title="Tanyakan dan analisis data pencarian dengan SSDM AI"
+                >
+                  <Sparkles size={13} />
+                  <span>Tanya SSDM AI</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Table */}

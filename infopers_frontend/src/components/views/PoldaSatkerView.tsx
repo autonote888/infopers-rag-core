@@ -97,7 +97,10 @@ export default function PoldaSatkerView({ defaultTab = "polda" }: PoldaSatkerVie
       if (res.ok) {
         const json = await res.json();
         if (json.data && json.data.list_polda && json.data.list_polda.length > 0) {
-          setListPolda(json.data.list_polda);
+          const validPolda = json.data.list_polda.filter(
+            (p: PoldaItem) => p.polda !== "MABES POLRI"
+          );
+          setListPolda(validPolda);
         }
       }
     } catch (e) {

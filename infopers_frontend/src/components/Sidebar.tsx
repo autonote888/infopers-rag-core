@@ -92,7 +92,7 @@ export default function Sidebar({
   const sections: MenuSection[] = [
     {
       id: "sec_1",
-      title: "BERANDA & PROFIL",
+      title: "MENU PORTAL TERPADU SSDM",
       items: [
         {
           key: "sotk_ssdm",
@@ -121,6 +121,13 @@ export default function Sidebar({
           description: "Daftar 1.502 Satker & Jumlah Personel",
           icon: Building2,
           badge: "1.502 Satker",
+        },
+        {
+          key: "smart_qa_ai",
+          label: "Pencarian Cerdas AI",
+          description: "Tanya Jawab Personel & Regulasi (Ollama)",
+          icon: Sparkles,
+          badge: "Ollama AI",
         },
       ],
     },

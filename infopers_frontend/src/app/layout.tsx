@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased font-sans`}
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased font-sans dark`}
       suppressHydrationWarning
     >
       <head>
@@ -52,13 +52,26 @@ export default function RootLayout({
                     });
                     observer.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['bis_skin_checked'] });
                   }
+
+                  // Pengalihan Instan Keycloak SSO di Head (Zero-Flicker / Bebas Sisa Tampilan)
+                  var sess = sessionStorage.getItem('infopers_token');
+                  var hash = window.location.hash || '';
+                  var search = window.location.search || '';
+                  var isLocal = search.indexOf('mode=') !== -1;
+                  var hasOidc = hash.indexOf('access_token') !== -1 || search.indexOf('code=') !== -1;
+
+                  if (!sess && !hasOidc && !isLocal) {
+                    var redir = encodeURIComponent(window.location.origin + '/');
+                    var ssoUrl = 'http://localhost:8080/realms/ssdm-polri/protocol/openid-connect/auth?client_id=infopers-frontend&response_type=token%20id_token&scope=openid%20profile%20email&redirect_uri=' + redir + '&nonce=' + Date.now() + '&prompt=login';
+                    window.location.replace(ssoUrl);
+                  }
                 } catch (e) {}
               })();
             `,
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col font-sans bg-slate-900" suppressHydrationWarning>
         {children}
       </body>
     </html>

@@ -1,7 +1,7 @@
 # Script Otomatis Backup Project INFOPERS SSDM POLRI
-# Menyimpan seluruh source code backend & frontend ke dalam file .zip dengan stempel tanggal & waktu serta label perubahan
+# Menyimpan seluruh source code backend, frontend, dokumen, skrip, keycloak, serta DUMP BASIS DATA POSTGRESQL LENGKAP ke dalam file .zip
 param(
-    [string]$Keterangan = "penambahan_menu_record_memory_dan_dokumen_kapasitas"
+    [string]$Keterangan = "update_sistem_infopers_terakhir"
 )
 
 $projectRoot = $PSScriptRoot
@@ -22,34 +22,110 @@ if ($cleanKeterangan) {
 
 $zipFilePath = Join-Path $backupDir $zipFileName
 
-# Folder sementara untuk filter file (mengabaikan node_modules, .next, backend.exe, dll)
+# Folder sementara untuk staging file (mengabaikan node_modules, .next, biner exe, dll)
 $tempDir = Join-Path $env:TEMP "infopers_backup_staging_$timestamp"
 if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
 New-Item -ItemType Directory -Path $tempDir | Out-Null
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "  MEMULAI PROSES BACKUP KODINGAN INFOPERS SSDM POLRI      " -ForegroundColor Yellow
+Write-Host "  MEMULAI PROSES BACKUP LENGKAP INFOPERS POLRI (DATA & CODE) " -ForegroundColor Yellow
 Write-Host "  Waktu Backup : $(Get-Date -Format 'dd MMMM yyyy HH:mm:ss')" -ForegroundColor White
 Write-Host "  Keterangan   : $cleanKeterangan" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-# 1. Salin Backend
+# 1. PENCADANGAN BASIS DATA POSTGRESQL LENGKAP (DUMP 483K PERSONEL & AUDIT)
+Write-Host "`n[1/6] Mencadangkan Basis Data PostgreSQL (infopers_db / postgres)..." -ForegroundColor Green
+$pgDumpPath = $null
+if (Get-Command pg_dump -ErrorAction SilentlyContinue) {
+    $pgDumpPath = (Get-Command pg_dump).Source
+} else {
+    $pgPaths = @(
+        "C:\Program Files\PostgreSQL\18\bin\pg_dump.exe",
+        "C:\Program Files\PostgreSQL\17\bin\pg_dump.exe",
+        "C:\Program Files\PostgreSQL\16\bin\pg_dump.exe",
+        "C:\Program Files\PostgreSQL\15\bin\pg_dump.exe"
+    )
+    foreach ($p in $pgPaths) {
+        if (Test-Path $p) {
+            $pgDumpPath = $p
+            break
+        }
+    }
+}
+
+$dbDest = Join-Path $tempDir "database_backup"
+New-Item -ItemType Directory -Path $dbDest | Out-Null
+
+if ($pgDumpPath) {
+    try {
+        $env:PGPASSWORD = "admin"
+        $dumpFile = Join-Path $dbDest "infopers_database_full.dump"
+        $schemaFile = Join-Path $dbDest "infopers_database_schema.sql"
+        
+        Write-Host "  - Menjalankan pg_dump terkompresi cepat (-F c)..." -ForegroundColor Gray
+        & $pgDumpPath -U postgres -h localhost -p 5432 -d postgres -F c -f $dumpFile 2>$null
+        
+        Write-Host "  - Menjalankan pg_dump struktur schema SQL..." -ForegroundColor Gray
+        & $pgDumpPath -U postgres -h localhost -p 5432 -d postgres --schema-only -f $schemaFile 2>$null
+        
+        if (Test-Path $dumpFile) {
+            $dumpSizeMB = [math]::Round((Get-Item $dumpFile).Length / 1MB, 2)
+            Write-Host "  [OK] Dump data lengkap berhasil dibuat ($dumpSizeMB MB)." -ForegroundColor Green
+        } else {
+            Write-Host "  [PERINGATAN] Layanan PostgreSQL belum aktif atau password tidak sesuai. Melanjutkan pencadangan kode..." -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "  [PERINGATAN] Gagal menjalankan pg_dump: $_" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "  [INFO] pg_dump tidak terdeteksi di PATH atau folder default. Melewati dump basis data..." -ForegroundColor Gray
+}
+
+# 2. Salin Konfigurasi IAM Keycloak
+Write-Host "`n[2/6] Menyalin Modul IAM & SSO Keycloak..." -ForegroundColor Green
+$keycloakSrc = Join-Path $projectRoot "keycloak_setup"
+if (Test-Path $keycloakSrc) {
+    $keycloakDest = Join-Path $tempDir "keycloak_setup"
+    New-Item -ItemType Directory -Path $keycloakDest | Out-Null
+    robocopy $keycloakSrc $keycloakDest /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+    Write-Host "  [OK] Seluruh berkas realm dan docker-compose Keycloak tercadangkan." -ForegroundColor Gray
+}
+
+# 3. Salin Backend Golang (Sertakan source code lengkap & executable infopers_server.exe, abaikan file temporary editor *.exe~)
+Write-Host "`n[3/6] Menyalin Backend REST API Golang..." -ForegroundColor Green
 $backendDest = Join-Path $tempDir "infopers_backend"
 New-Item -ItemType Directory -Path $backendDest | Out-Null
-robocopy (Join-Path $projectRoot "infopers_backend") $backendDest /E /XF *.exe *.log scratch_* /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+robocopy (Join-Path $projectRoot "infopers_backend") $backendDest /E /XF *.exe~ *.log scratch_* /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
 
-# 2. Salin Frontend (Abaikan node_modules dan .next)
+# 4. Salin Frontend Next.js (Abaikan node_modules, .next, dan .git)
+Write-Host "`n[4/6] Menyalin Frontend Next.js..." -ForegroundColor Green
 $frontendDest = Join-Path $tempDir "infopers_frontend"
 New-Item -ItemType Directory -Path $frontendDest | Out-Null
 robocopy (Join-Path $projectRoot "infopers_frontend") $frontendDest /E /XD node_modules .next .git /XF *.log /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
 
-# 3. Salin File Root (README, dokumen perencanaan, backup scripts, dll)
+# 5. Salin Modul & Konfigurasi AI serta Logo & Dokumen Perencanaan
+Write-Host "`n[5/6] Menyalin Konfigurasi AI, Logo, dan Dokumen..." -ForegroundColor Green
+$aiSrc = Join-Path $projectRoot "ai"
+if (Test-Path $aiSrc) {
+    $aiDest = Join-Path $tempDir "ai"
+    New-Item -ItemType Directory -Path $aiDest | Out-Null
+    robocopy $aiSrc $aiDest /E /XF *.gguf *.bin *.safetensors *.tmp /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+}
+
+$logoSrc = Join-Path $projectRoot "logo"
+if (Test-Path $logoSrc) {
+    $logoDest = Join-Path $tempDir "logo"
+    New-Item -ItemType Directory -Path $logoDest | Out-Null
+    robocopy $logoSrc $logoDest /E /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+}
+
+# Salin File Root (README, dokumen perencanaan markdown, batch, powershell, dll)
 Get-ChildItem -Path $projectRoot -File | Where-Object { $_.Name -notmatch "\.zip$" } | ForEach-Object {
     Copy-Item $_.FullName -Destination $tempDir
 }
 
-# 4. Kompresi ke .ZIP
-Write-Host "Sedang mengompresi ke file zip..." -ForegroundColor Gray
+# 6. Kompresi ke .ZIP
+Write-Host "`n[6/6] Mengompresi seluruh paket data & kodingan ke file .ZIP..." -ForegroundColor Green
 Compress-Archive -Path "$tempDir\*" -DestinationPath $zipFilePath -Force
 
 # Bersihkan staging folder
@@ -58,22 +134,12 @@ Remove-Item -Recurse -Force $tempDir
 $zipSize = (Get-Item $zipFilePath).Length / 1MB
 Write-Host ""
 Write-Host "==========================================================================" -ForegroundColor Green
-Write-Host " [$timestamp] BACKUP BERHASIL DIBUAT DENGAN SUKSES! " -ForegroundColor Green
+Write-Host " [$timestamp] BACKUP DATA LENGKAP BERHASIL DIBUAT DENGAN SUKSES! " -ForegroundColor Green
 Write-Host "==========================================================================" -ForegroundColor Green
 Write-Host " WAKTU / STEMPEL  : $timestamp" -ForegroundColor Cyan
 Write-Host " KETERANGAN       : $cleanKeterangan" -ForegroundColor Yellow
 Write-Host " FILE ARSIP       : $zipFileName" -ForegroundColor White
 Write-Host " LOKASI PENYIMPAN : $zipFilePath" -ForegroundColor Gray
 Write-Host " UKURAN ARSIP     : $([math]::Round($zipSize, 2)) MB" -ForegroundColor Yellow
-Write-Host "--------------------------------------------------------------------------" -ForegroundColor DarkGray
-Write-Host " DAFTAR MENU DAN FITUR TERBARU PADA ARSIP INI:" -ForegroundColor Yellow
-Write-Host "   1. [SSDM Artificial Intelligence] : Cover bersih, branding resmi Presisi, 1 menu portal" -ForegroundColor White
-Write-Host "   2. [Kotak Dialog Percakapan]      : 'Hari ini ada agenda apa?', Berpikir, Mic, Kirim" -ForegroundColor White
-Write-Host "   3. [Menu Record Memory & NVRAM]   : Pantau & rekam live RAM 15.7GB, VRAM 1GB, stack proses" -ForegroundColor White
-Write-Host "   4. [Dokumen Kapasitas Kebutuhan]  : MENENTUKAN_KAPASITAS_KEBUTUHAN_SAAT_INI.md" -ForegroundColor White
-Write-Host "   5. [Menu Dokumen Pengadaan]       : Dokumen Perencanaan Hardware AI, Analisis Library & RAB" -ForegroundColor White
-Write-Host "   6. [Panel Pengendali Ollama]      : Switcher Model (Llama3/Qwen/DeepSeek) dan Tes Host 11434" -ForegroundColor White
-Write-Host "   7. [NLP Parser Kueri AI]          : Menemukan NIP/Nama/Satker spesifik (Contoh: PPPK Puskeu)" -ForegroundColor White
-Write-Host "   8. [Dukungan Data PPPK]           : 1.666 data PPPK + 15.718 ASN + 465.971 Polri aktif" -ForegroundColor White
-Write-Host "   9. [Portal SSDM 6 Pilar]          : 22 Submodul Lengkap Presisi Terintegrasi" -ForegroundColor White
+Write-Host " CAKUPAN ARSIP    : Data PostgreSQL (Dump), Keycloak, Backend, Frontend, AI, Dokumen" -ForegroundColor Cyan
 Write-Host "==========================================================================" -ForegroundColor Green

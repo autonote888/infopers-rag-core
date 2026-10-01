@@ -17,7 +17,7 @@ import {
 import { MenuKey } from "@/types";
 
 interface SpecializedModuleViewProps {
-  moduleKey: MenuKey;
+  moduleKey: string;
 }
 
 export default function SpecializedModuleView({ moduleKey }: SpecializedModuleViewProps) {

@@ -13,6 +13,9 @@
 *.tar.gz
 *.rar
 *.7z
+*.gguf
+ai/*.gguf
+models/*.gguf
 
 # ------------------------------------------------------------------------------
 # 2. HASIL KOMPILASI BINER BACKEND GO (Executables)

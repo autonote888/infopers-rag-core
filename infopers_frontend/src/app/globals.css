@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -71,4 +73,149 @@ h1, h2, h3, h4, h5, h6 {
 }
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #52525b;
+}
+
+/* 3D Visual Depth & Floating Animations for Professional AI Assistant */
+@keyframes float3d {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotateX(3deg) rotateY(-3deg);
+  }
+}
+
+@keyframes pulseGlow3d {
+  0%, 100% {
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3), 0 0 15px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.45), 0 0 25px rgba(59, 130, 246, 0.4);
+  }
+}
+
+.animate-float-3d {
+  animation: float3d 5s ease-in-out infinite;
+}
+
+.animate-glow-3d {
+  animation: pulseGlow3d 3.5s ease-in-out infinite;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+/* ======================================================================
+   FUTURISTIC PAGE TRANSITIONS & COOL CYBER LOADERS
+   ====================================================================== */
+
+/* 1. Page Entrance Transition (Smooth Blur-Fade & Micro-Scale) */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.992);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 2. Top Laser Progress Bar */
+@keyframes laserScan {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.laser-bar {
+  background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, #38bdf8, transparent);
+  animation: laserScan 1.2s ease-in-out infinite;
+}
+
+/* 3. Holographic Dual-Ring Conic Spin */
+@keyframes spinClockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinCounterClockwise {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+.animate-spin-clockwise {
+  animation: spinClockwise 2.4s linear infinite;
+}
+
+.animate-spin-counter {
+  animation: spinCounterClockwise 1.8s linear infinite;
+}
+
+/* 4. Radar Wave Pulse */
+@keyframes radarWave {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-radar-wave {
+  animation: radarWave 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+/* 5. Cyber Shimmer Skeleton */
+@keyframes cyberShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.cyber-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: cyberShimmer 1.5s infinite;
+}
+
+.cyber-shimmer-light {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.4) 25%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(226, 232, 240, 0.4) 75%
+  );
+  background-size: 200% 100%;
+  animation: cyberShimmer 1.5s infinite;
 }

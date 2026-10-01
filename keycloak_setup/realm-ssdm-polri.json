@@ -1,0 +1,125 @@
+{
+  "realm": "ssdm-polri",
+  "displayName": "SSDM POLRI PRESISI IDENTITY ACCESS MANAGEMENT",
+  "displayNameHtml": "<div class='kc-logo-text'><span>SSDM POLRI</span> PRESISI</div>",
+  "loginTheme": "keycloak.v2",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": false,
+  "duplicateEmailsAllowed": true,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "roles": {
+    "realm": [
+      {
+        "name": "SUPERADMIN",
+        "description": "Superadministrator Nasional SSDM Mabes Polri"
+      },
+      {
+        "name": "ADMIN_POLDA",
+        "description": "Administrator Ro SDM Polda Jajaran"
+      },
+      {
+        "name": "ADMIN_POLRES",
+        "description": "Operator Bag SDM Polres Jajaran"
+      },
+      {
+        "name": "PERSONEL",
+        "description": "Personel Polri & ASN Mandiri"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "infopers-frontend",
+      "name": "INFOPERS Web Frontend (Next.js)",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "rootUrl": "http://localhost:3000",
+      "baseUrl": "http://localhost:3000",
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "+"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:3000/*"
+      }
+    },
+    {
+      "clientId": "infopers-backend",
+      "name": "INFOPERS REST API Backend (Golang)",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "google",
+      "displayName": "Google",
+      "providerId": "google",
+      "enabled": true,
+      "config": {
+        "clientId": "google-oauth-polri.apps.googleusercontent.com",
+        "clientSecret": "polri-secret"
+      }
+    },
+    {
+      "alias": "github",
+      "displayName": "GitHub",
+      "providerId": "github",
+      "enabled": true,
+      "config": {
+        "clientId": "github-oauth-polri",
+        "clientSecret": "polri-secret"
+      }
+    }
+  ],
+  "users": [
+    {
+      "username": "admin.nasional",
+      "enabled": true,
+      "email": "admin.nasional@ssdm.polri.go.id",
+      "firstName": "Superadmin",
+      "lastName": "Nasional Mabes Polri",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Polri2026!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "SUPERADMIN"
+      ]
+    },
+    {
+      "username": "04031518",
+      "enabled": true,
+      "email": "04031518@ssdm.polri.go.id",
+      "firstName": "Yusuf",
+      "lastName": "Hambali",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Polri2026!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "PERSONEL"
+      ]
+    }
+  ]
+}

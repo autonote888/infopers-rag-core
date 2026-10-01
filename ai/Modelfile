@@ -1,0 +1,6 @@
+FROM ./Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf
+PARAMETER temperature 0.3
+PARAMETER num_ctx 1024
+PARAMETER num_thread 8
+PARAMETER num_predict 80
+SYSTEM "Nama kamu adalah SSDM AI, asisten resmi SSDM Polri. Jawablah secara singkat, padat, lugas, resmi, dan akurat tanpa tanda bintang (**)."

@@ -52,7 +52,7 @@ const OllamaContext = createContext<OllamaContextType | undefined>(undefined);
 export function OllamaProvider({ children }: { children: React.ReactNode }) {
   const [statusData, setStatusData] = useState<OllamaStatusData | null>(null);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("llama3:8b");
+  const [selectedModel, setSelectedModel] = useState("ssdm-ai:latest");
   const [selectedMode, setSelectedMode] = useState<AIMode>("rag_ollama");
   const [answerStyle, setAnswerStyle] = useState<AnswerStyle>("nota_dinas");
   const [ollamaHost, setOllamaHost] = useState("http://localhost:11434");
@@ -99,8 +99,13 @@ export function OllamaProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const json = await res.json();
         setStatusData(json);
-        if (json.models && json.models.length > 0 && !json.models.includes(selectedModel)) {
-          setSelectedModel(json.models[0]);
+        if (json.models && json.models.length > 0) {
+          const ssdmModel = json.models.find((m: string) => m.toLowerCase().includes("ssdm-ai"));
+          if (ssdmModel) {
+            setSelectedModel(ssdmModel);
+          } else if (!json.models.includes(selectedModel)) {
+            setSelectedModel(json.models[0]);
+          }
         }
         return json.is_available === true;
       }
@@ -121,10 +126,21 @@ export function OllamaProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkStatus(ollamaHost);
+    // Polling setiap 3 detik agar langsung mendeteksi saat AI dibuka atau ditutup
     const timer = setInterval(() => {
       checkStatus(ollamaHost);
-    }, 15000);
-    return () => clearInterval(timer);
+    }, 3000);
+
+    // Langsung cek ulang saat pengguna kembali ke jendela browser
+    const handleFocus = () => {
+      checkStatus(ollamaHost);
+    };
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, [ollamaHost]);
 
   const handleSetHost = (host: string) => {
